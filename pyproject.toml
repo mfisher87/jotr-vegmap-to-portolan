@@ -1,0 +1,22 @@
+[project]
+name = "jotr-vegmap-to-portolan"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Matt Fisher", email = "mfisher87@gmail.com" }
+]
+requires-python = ">=3.13,<3.14"  # fiona doesn't have wheels for 3.14
+dependencies = [
+    "fiona>=1.10.1",
+    "geopandas>=1.2.0",
+    "pystac>=1.16.0",
+    "typer>=0.28.0",
+]
+
+[project.scripts]
+jotr-vegmap-to-portolan = "jotr_vegmap_to_portolan.__main__:cli"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"
