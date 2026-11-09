@@ -5,7 +5,6 @@ import zipfile
 from contextlib import contextmanager
 from pathlib import Path
 
-import geopandas as gpd
 import pystac
 
 from jotr_vegmap_to_portolan.dirs import INPUT_DATA_DIRNAME
@@ -31,7 +30,7 @@ def download_and_unzip_data(*, tmpdir: Path) -> Path:
 
     with (
         download_data() as downloaded,
-        zipfile.ZipFile(downloaded, 'r') as da_zip,
+        zipfile.ZipFile(downloaded, "r") as da_zip,
     ):
         da_zip.extractall(destination_dir)
 

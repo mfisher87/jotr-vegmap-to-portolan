@@ -17,7 +17,6 @@ def main():
     tmpdir = Path(tempfile.mkdtemp(prefix="jotr_vegmap_to_portolan_"))
     rprint(f"[green]Using tempdir: [bold]{tmpdir}[/]")
 
-
     input_data_stac = get_input_data(tmpdir=tmpdir)
     parqueted_stac = generate_parquet(input_data)
     pmtiled_stac = generate_pmtiles(parqueted)
