@@ -13,7 +13,7 @@ cli = typer.Typer()
 
 
 @cli.command()
-def main():
+def main() -> None:
     tmpdir = Path(tempfile.mkdtemp(prefix="jotr_vegmap_to_portolan_"))
     rprint(f"[green]Using tempdir: [bold]{tmpdir}[/]")
 

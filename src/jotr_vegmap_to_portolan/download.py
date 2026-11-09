@@ -4,6 +4,7 @@ import urllib.request
 import zipfile
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Iterator
 
 import pystac
 
@@ -14,7 +15,7 @@ DOWNLOAD_FILENAME = "jotr_vegmap_gdb.zip"
 
 
 @contextmanager
-def download_data() -> Path:
+def download_data() -> Iterator[Path]:
     with tempfile.TemporaryDirectory() as destination_dir:
         destination_filepath = Path(destination_dir) / DOWNLOAD_FILENAME
 
@@ -37,7 +38,7 @@ def download_and_unzip_data(*, tmpdir: Path) -> Path:
     return destination_dir / "jotrgeodata" / "jotrgeodata.gdb"
 
 
-def get_input_data(*, tmpdir: Path) -> pystac.Catalog:
+def get_input_data(*, tmpdir: Path) -> Path:
     destination_dir = tmpdir / INPUT_DATA_DIRNAME
     gdb_dir = download_and_unzip_data(tmpdir=tmpdir)
 
@@ -64,4 +65,11 @@ def get_input_data(*, tmpdir: Path) -> pystac.Catalog:
 
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
-    return catalog.get_self_href()
+
+    href = catalog.get_self_href()
+    if href is None:
+        raise RuntimeError(
+            "This is a typeguard, if this raises at runtime you gots a bug"
+        )
+
+    return Path(href)
