@@ -12,6 +12,11 @@ from jotr_vegmap_to_portolan.portolan import generate_portolan
 
 cli = typer.Typer()
 
+# TODO: Simplify things a bit -- we're repeating a lot of logic to open catalogs. Steps
+# can be expressed as a simple data structure, and transformation functions can be
+# simplified to callbacks that receive and output python objects, then the caller can
+# do reading and writing? ¯\_(ツ)_/¯
+
 
 @cli.command()
 def main() -> None:
