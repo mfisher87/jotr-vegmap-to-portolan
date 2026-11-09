@@ -35,8 +35,12 @@ def main() -> None:
     )
     rprint(f"[yellow]Generated parquet: [bold]{parqueted_stac_filepath}[/]")
 
-    pmtiled_stac_filepath = generate_pmtiles(parqueted_stac_filepath)
+    pmtiled_stac_filepath = generate_pmtiles(
+        parqueted_stac_filepath=parqueted_stac_filepath,
+    )
     rprint(f"[yellow]Generated PMTiles: [bold]{pmtiled_stac_filepath}[/]")
 
-    portolaned_stac_filepath = generate_portolan(pmtiled_stac_filepath)
+    portolaned_stac_filepath = generate_portolan(
+        pmtiled_stac_filepath=pmtiled_stac_filepath,
+    )
     rprint(f"[green]Output: [bold]{portolaned_stac_filepath}[/]")
