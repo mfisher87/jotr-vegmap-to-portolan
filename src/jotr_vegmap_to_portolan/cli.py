@@ -18,7 +18,8 @@ def main():
     rprint(f"[green]Using tempdir: [bold]{tmpdir}[/]")
 
     input_data_stac = get_input_data(tmpdir=tmpdir)
-    parqueted_stac = generate_parquet(input_data)
-    pmtiled_stac = generate_pmtiles(parqueted)
+    parqueted_stac = generate_parquet(input_data_stac)
+    pmtiled_stac = generate_pmtiles(parqueted_stac)
 
-    portolaned_stac = generate_portolan(pmtiled)
+    portolaned_stac = generate_portolan(pmtiled_stac)
+    rprint(f"[green]Output: [bold]{portolaned_stac}[/]")
