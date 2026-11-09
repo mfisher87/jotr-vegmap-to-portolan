@@ -164,6 +164,7 @@ dependencies = [
     { name = "fiona" },
     { name = "geopandas" },
     { name = "pyarrow" },
+    { name = "pyogrio" },
     { name = "pystac" },
     { name = "typer" },
 ]
@@ -179,6 +180,7 @@ requires-dist = [
     { name = "fiona", specifier = ">=1.10.1" },
     { name = "geopandas", specifier = ">=1.2.0" },
     { name = "pyarrow", specifier = ">=26.0.1" },
+    { name = "pyogrio", specifier = ">=0.13.0" },
     { name = "pystac", specifier = ">=1.16.0" },
     { name = "typer", specifier = ">=0.28.0" },
 ]
