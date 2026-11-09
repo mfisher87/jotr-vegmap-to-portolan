@@ -12,6 +12,8 @@ from jotr_vegmap_to_portolan.dirs import INPUT_DATA_DIRNAME
 
 DOWNLOAD_URL = "https://irma.nps.gov/DataStore/DownloadFile/612199"
 DOWNLOAD_FILENAME = "jotr_vegmap_gdb.zip"
+DOWNLOAD_ITEM_ID = "jotr-park-boundary-gdb"
+DOWNLOAD_ASSET_KEY = DOWNLOAD_ITEM_ID
 
 
 @contextmanager
@@ -47,14 +49,14 @@ def get_input_data(*, tmpdir: Path) -> Path:
         description="Source geodatabase of JOTR vegetation map",
     )
     item = pystac.Item(
-        id="jotr-park-boundary-gdb",
+        id=DOWNLOAD_ITEM_ID,
         geometry=None,
         bbox=None,
         datetime=datetime.datetime.utcnow(),
         properties={},
     )
     item.add_asset(
-        key="gdb",
+        key=DOWNLOAD_ASSET_KEY,
         asset=pystac.Asset(
             href=str(gdb_dir),
             # This feels like nonsense -- assets are usually not ... directories.

@@ -1,11 +1,11 @@
 # A Geodatabase contains tables that it calls "layers"
-DATA_LAYERS = {
-    "park-boundary": {
-        "input-id": "JOTR_Park_Boundary",
-        "output-id": "jotr-park-boundary",
+DATA_LAYERS = [
+    {
+        "from_gpd_layer": "JOTR_Park_Boundary",
+        "to_asset_id": "park-boundary",
     },
-    "vegetation-map": {
-        "input-id": "JOTR_VegPolys",
-        "output-id": "jotr-vegetation-polygons",
+    {
+        "from_gpd_layer": "JOTR_VegPolys",
+        "to_asset_id": "vegetation-map",
     },
-}
+]

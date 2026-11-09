@@ -10,6 +10,7 @@ requires-python = ">=3.13,<3.14"  # fiona doesn't have wheels for 3.14
 dependencies = [
     "fiona>=1.10.1",
     "geopandas>=1.2.0",
+    "pyarrow>=26.0.1",
     "pystac>=1.16.0",
     "typer>=0.28.0",
 ]
@@ -17,6 +18,7 @@ dependencies = [
 [dependency-groups]
 typecheck = [
     "mypy",
+    "types-geopandas>=1.2.0.20261107",
 ]
 
 [project.scripts]
