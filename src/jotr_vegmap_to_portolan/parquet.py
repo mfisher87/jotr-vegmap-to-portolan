@@ -45,6 +45,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
             asset=pystac.Asset(
                 href=str(parquet_path),
                 media_type=pystac.MediaType.PARQUET,
+                roles=["data"],
             ),
         )
         catalog.add_item(item)

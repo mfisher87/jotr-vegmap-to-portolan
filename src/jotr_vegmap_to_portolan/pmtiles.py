@@ -36,6 +36,7 @@ def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
             asset=pystac.Asset(
                 href=str(pmtiles_path),
                 media_type=pystac.MediaType.VND_PMTILES,
+                roles=["visual"],
             ),
         )
 
