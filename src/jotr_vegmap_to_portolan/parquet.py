@@ -48,7 +48,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
                 roles=["data"],
             ),
         )
-        catalog.add_item(item)
+        catalog.add_item(item, title=data_layer["title"])
 
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
