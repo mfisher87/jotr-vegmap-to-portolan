@@ -13,6 +13,7 @@ from jotr_vegmap_to_portolan.layers import DATA_LAYERS
 def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
     destination_dir = tmpdir / PARQUET_DIRNAME
     assets_dir = tmpdir / ASSETS_DIRNAME
+
     input_stac = pystac.Catalog.from_file(input_data_stac_filepath)
 
     gdb_item = next(input_stac.get_items(DOWNLOAD_ITEM_ID), None)
@@ -22,20 +23,20 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
     gdb_path = Path(gdb_item.assets[DOWNLOAD_ASSET_KEY].href)
 
     catalog = pystac.Catalog(
-        id="jotr-vegmap-gdb",
-        description="Source geodatabase of JOTR vegetation map",
+        id="jotr-vegmap-parquet",
+        description="JOTR vegetation map in Parquet",
     )
 
     for data_layer in DATA_LAYERS:
         parquet_path = assets_dir / f"{data_layer['to_asset_id']}.parquet"
 
-        df = gpd.read_file(gdb_path, layer=data_layer["from_gpd_layer"])
-        df.to_parquet(parquet_path)
+        gdf = gpd.read_file(gdb_path, layer=data_layer["from_gpd_layer"])
+        gdf.to_parquet(parquet_path)
 
         item = pystac.Item(
             id=data_layer["to_asset_id"],
             geometry=None,
-            bbox=df.total_bounds.tolist(),
+            bbox=gdf.total_bounds.tolist(),
             datetime=datetime.datetime.now(),  # Probably bad but whatever
             properties={},
         )
