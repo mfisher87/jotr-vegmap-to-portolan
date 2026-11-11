@@ -41,7 +41,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
             properties={},
         )
         item.add_asset(
-            key=data_layer["to_asset_id"],
+            key="parquet",
             asset=pystac.Asset(
                 href=str(parquet_path),
                 media_type=pystac.MediaType.PARQUET,

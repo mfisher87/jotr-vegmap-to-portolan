@@ -37,6 +37,7 @@ def main() -> None:
 
     pmtiled_stac_filepath = generate_pmtiles(
         parqueted_stac_filepath=parqueted_stac_filepath,
+        tmpdir=tmpdir,
     )
     rprint(f"[yellow]Generated PMTiles: [bold]{pmtiled_stac_filepath}[/]")
 
