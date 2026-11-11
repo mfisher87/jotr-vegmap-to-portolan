@@ -13,6 +13,7 @@ dependencies = [
     "pyarrow>=26.0.1",
     "pyogrio>=0.13.0",
     "pystac>=1.16.0",
+    "rashid>=0.3.0",
     "typer>=0.28.0",
 ]
 
