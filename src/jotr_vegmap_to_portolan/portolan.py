@@ -47,7 +47,7 @@ def add_static_assets(*, catalog: pystac.Catalog, target_dir: Path) -> None:
         catalog.add_link(
             pystac.Link(
                 rel=asset["rel"],
-                target=str(asset_destination),
+                target=str(asset_destination.relative_to(target_dir)),
                 media_type="text/markdown",
                 title=asset_destination.name,
             )
