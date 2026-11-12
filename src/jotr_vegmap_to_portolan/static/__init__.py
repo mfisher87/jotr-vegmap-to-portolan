@@ -1,5 +1,5 @@
-from collections.abc import TypedDict
 from pathlib import Path
+from typing import TypedDict
 
 
 class StaticAssetDescription(TypedDict):
