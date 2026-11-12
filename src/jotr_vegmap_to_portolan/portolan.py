@@ -27,6 +27,7 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
+    add_portolan_extension(catalog=catalog)
     add_static_assets(catalog=catalog)
 
     catalog.normalize_hrefs(str(destination_dir))
@@ -40,12 +41,22 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
         raise ValidationException
 
 
+def add_portolan_extension(*, catalog: pystac.Catalog) -> None:
+    portolan_schema_url = "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json"
+
+    catalog.stac_extensions.append(portolan_schema_url)
+
+    # WARNING: Assumes a single-collection catalog
+    collection = next(catalog.get_children())
+    collection.stac_extensions.append(portolan_schema_url)
+
+
 def add_static_assets(*, catalog: pystac.Catalog) -> None:
     """Add README.md and AGENTS.md to catalog.
 
     These aren't "assets" in the STAC sense.
     """
-    # WARNING: Assumes a single collection catalog
+    # WARNING: Assumes a single-collection catalog
     collection = next(catalog.get_children())
 
     for asset in STATIC_ASSETS:
