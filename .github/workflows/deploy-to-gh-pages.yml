@@ -16,19 +16,46 @@ jobs:
   build:
     runs-on: "ubuntu-latest"
     steps:
+      # Build the Portolan catalog
       - name: "Checkout"
-        uses: "actions/checkout@v4"
+        uses: "actions/checkout@v7.0.1"
 
       - name: "Install uv"
         uses: "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d" # v10.0.1
 
       - run: "uv run $(basename $PWD) /tmp/_site"
 
+
+      # Build Portolan browser
+      - name: "Checkout Portolan Browser repo"
+        uses: "actions/checkout@v7.0.1"
+        with:
+          repository: "portolan-sdi/portolan-browser"
+          persist-credentials: false
+          path: "portolan-browser"
+
+      - name: "Install pnpm"
+        working-directory: "portolan-browser"
+        uses: "pnpm/setup@v3"
+        with:
+          version: "11"
+          runtime: "node@24"
+          cache: true
+
+      - name: "Build Portolan Browser"
+        working-directory: "portolan-browser"
+        run: "pnpm run build"
+
+      - name: "Copy portolan browser to output dir"
+        run: "cp -R dist/* /tmp/_site"
+
+
+
+
       - name: "Upload site artifact"
         uses: "actions/upload-pages-artifact@v3"
         with:
           path: "/tmp/_site"
-
 
   deploy:
     runs-on: "ubuntu-latest"
