@@ -65,6 +65,20 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
                 ]
             ),
         ),
+        providers=[
+            pystac.Provider(
+                name="National Park Service",
+                url="https://www.nps.gov",
+                description="Original data provider",
+                roles=[pystac.ProviderRole.PRODUCER],
+            ),
+            pystac.Provider(
+                name="Schmidt Center for Data Science & Environment",
+                url="https://dse.berkeley.edu/",
+                description="Processed source data in to H3 DGGS",
+                roles=[pystac.ProviderRole.PROCESSOR],
+            ),
+        ],
         # Unclear. License field on portal is empty. Data is public domain.
         license="CC0-1.0",
     )
