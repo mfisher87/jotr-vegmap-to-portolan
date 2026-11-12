@@ -35,7 +35,6 @@ jobs:
           path: "portolan-browser"
 
       - name: "Install pnpm"
-        working-directory: "portolan-browser"
         uses: "pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1"  # v3
         with:
           version: "11"
@@ -46,11 +45,10 @@ jobs:
         working-directory: "portolan-browser"
         run: "pnpm run build"
 
+      # Finalize
       - name: "Copy portolan browser to output dir"
+        working-directory: "portolan-browser"
         run: "cp -R dist/* /tmp/_site"
-
-
-
 
       - name: "Upload site artifact"
         uses: "actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa"  # v3
