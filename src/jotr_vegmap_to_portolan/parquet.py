@@ -27,6 +27,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
         description="JOTR vegetation map in Parquet",
     )
 
+    items: list[pystac.Item] = []
     for data_layer in DATA_LAYERS:
         parquet_path = assets_dir / f"{data_layer['to_asset_id']}.parquet"
 
@@ -48,7 +49,27 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
                 roles=["data"],
             ),
         )
-        catalog.add_item(item, title=data_layer["title"])
+        items.append(item)
+
+    collection = pystac.Collection(
+        id="jotr-vegmap",
+        description="JOTR vegetation map & park boundary",
+        extent=pystac.Extent(
+            spatial=pystac.SpatialExtent(bboxes=[item.bbox for item in items]),
+            temporal=pystac.TemporalExtent(
+                intervals=[
+                    [
+                        datetime.datetime.now(),
+                        datetime.datetime.now(),
+                    ]
+                ]
+            ),
+        ),
+    )
+    catalog.add_child(collection, title=collection.description)
+
+    for item in items:
+        collection.add_item(item, title=data_layer["title"])
 
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
