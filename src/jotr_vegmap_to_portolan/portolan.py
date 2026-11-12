@@ -5,7 +5,7 @@ import pystac
 from rashid import validate
 
 from jotr_vegmap_to_portolan.dirs import PORTOLAN_DIRNAME
-from jotr_vegmap_to_portolan.exceptions import ValidationException
+from jotr_vegmap_to_portolan.exceptions import ValidationException, TypeguardException
 from jotr_vegmap_to_portolan.static import STATIC_ASSETS
 
 
@@ -32,7 +32,12 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
 
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
-    report = validate(catalog.get_self_href())
+
+    catalog_href = catalog.get_self_href()
+    if catalog_href is None:
+        raise TypeguardException
+
+    report = validate(catalog_href)
 
     for finding in report.errors:
         print(finding.message)
