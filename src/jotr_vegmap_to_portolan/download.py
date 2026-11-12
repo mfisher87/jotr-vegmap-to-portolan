@@ -53,7 +53,7 @@ def get_input_data(*, tmpdir: Path) -> Path:
         id=DOWNLOAD_ITEM_ID,
         geometry=None,
         bbox=None,
-        datetime=datetime.datetime.utcnow(),
+        datetime=datetime.datetime.now(tz=datetime.UTC),
         properties={},
     )
     item.add_asset(
