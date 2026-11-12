@@ -36,7 +36,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
         item = pystac.Item(
             id=data_layer["to_asset_id"],
             geometry=None,
-            bbox=gdf.total_bounds.tolist(),
+            bbox=gdf.to_crs("EPSG:4326").total_bounds.tolist(),
             datetime=datetime.datetime.now(),  # Probably bad but whatever
             properties={},
         )
