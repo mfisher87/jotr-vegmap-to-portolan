@@ -36,3 +36,13 @@ files = ["src"]
 strict = true
 warn_unreachable = true
 disallow_any_unimported = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D100", "D101", "D103", "D104", "D107",  # TEMP: Ignore required docstring rules
+    "T201",  # Forbid print statements
+    "FIX002",  # Forbid TODO comments
+    "TD002", "TD003",   # Require author, link for TODO comments
+    "S310",  # Require URL scheme check (we only use URL hardcoded URLs)
+]
