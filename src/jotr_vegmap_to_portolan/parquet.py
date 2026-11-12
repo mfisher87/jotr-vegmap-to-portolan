@@ -5,7 +5,7 @@ import geopandas as gpd
 import pystac
 
 from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME, PARQUET_DIRNAME
-from jotr_vegmap_to_portolan.download import DOWNLOAD_ITEM_ID, DOWNLOAD_ASSET_KEY
+from jotr_vegmap_to_portolan.download import DOWNLOAD_ASSET_KEY, DOWNLOAD_ITEM_ID
 from jotr_vegmap_to_portolan.exceptions import TypeguardException
 from jotr_vegmap_to_portolan.layers import DATA_LAYERS
 

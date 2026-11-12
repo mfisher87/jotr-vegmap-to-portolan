@@ -4,7 +4,7 @@ from pathlib import Path
 import pystac
 from rashid import validate
 
-from jotr_vegmap_to_portolan.exceptions import ValidationException, TypeguardException
+from jotr_vegmap_to_portolan.exceptions import TypeguardException, ValidationException
 from jotr_vegmap_to_portolan.static import STATIC_ASSETS
 
 
@@ -75,5 +75,5 @@ def add_static_assets(*, catalog: pystac.Catalog) -> None:
                     target=str(target_filepath.relative_to(target_dir)),
                     media_type="text/markdown",
                     title=target_filepath.name,
-                )
+                ),
             )

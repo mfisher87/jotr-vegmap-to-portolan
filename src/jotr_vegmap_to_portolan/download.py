@@ -2,9 +2,9 @@ import datetime
 import tempfile
 import urllib.request
 import zipfile
+from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator
 
 import pystac
 
