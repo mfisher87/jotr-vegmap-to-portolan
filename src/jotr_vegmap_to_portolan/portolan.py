@@ -40,6 +40,8 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
     if report.errors:
         raise ValidationException
 
+    return destination_dir
+
 
 def add_portolan_extension(*, catalog: pystac.Catalog) -> None:
     portolan_schema_url = "https://schemas.portolan-sdi.org/portolan/v0.2.0/schema.json"
