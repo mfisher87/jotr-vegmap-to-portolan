@@ -53,6 +53,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
 
     collection = pystac.Collection(
         id="jotr-vegmap",
+        title="JOTR vegetation map & park boundary",
         description="JOTR vegetation map & park boundary",
         extent=pystac.Extent(
             spatial=pystac.SpatialExtent(bboxes=[item.bbox for item in items]),
