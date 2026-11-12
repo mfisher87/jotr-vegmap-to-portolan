@@ -4,16 +4,14 @@ from pathlib import Path
 import pystac
 from rashid import validate
 
-from jotr_vegmap_to_portolan.dirs import PORTOLAN_DIRNAME
 from jotr_vegmap_to_portolan.exceptions import ValidationException, TypeguardException
 from jotr_vegmap_to_portolan.static import STATIC_ASSETS
 
 
-def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
-    destination_dir = tmpdir / PORTOLAN_DIRNAME
+def generate_portolan(*, pmtiled_stac_filepath: Path, target_dir: Path) -> Path:
     input_stac = pystac.Catalog.from_file(pmtiled_stac_filepath)
 
-    destination_dir.mkdir()
+    target_dir.mkdir(parents=True, exist_ok=True)
 
     catalog = input_stac.full_copy()
     catalog.id = "jotr-vegmap-portolan"
@@ -24,13 +22,13 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
 
     # Future steps depend on the catalog having the correct hrefs -- we'll need to do
     # this again when we're done updating the catalog.
-    catalog.normalize_hrefs(str(destination_dir))
+    catalog.normalize_hrefs(str(target_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
     add_portolan_extension(catalog=catalog)
     add_static_assets(catalog=catalog)
 
-    catalog.normalize_hrefs(str(destination_dir))
+    catalog.normalize_hrefs(str(target_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
     catalog_href = catalog.get_self_href()
@@ -45,7 +43,7 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, tmpdir: Path) -> Path:
     if report.errors:
         raise ValidationException
 
-    return destination_dir
+    return target_dir
 
 
 def add_portolan_extension(*, catalog: pystac.Catalog) -> None:

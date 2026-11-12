@@ -1,10 +1,11 @@
 import tempfile
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from rich import print as rprint
 
-from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME
+from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME, OUTPUT_DIRNAME
 from jotr_vegmap_to_portolan.download import get_input_data
 from jotr_vegmap_to_portolan.parquet import generate_parquet
 from jotr_vegmap_to_portolan.pmtiles import generate_pmtiles
@@ -19,7 +20,17 @@ cli = typer.Typer()
 
 
 @cli.command()
-def main() -> None:
+def main(
+    target_dir: Annotated[
+        Path | None,
+        typer.Argument(
+            help=(
+                "The location to output the catalog;"
+                " if unspecified, will use temp directory"
+            ),
+        ),
+    ] = None,
+) -> None:
     try:
         tmpdir = Path(tempfile.mkdtemp(prefix="jotr_vegmap_to_portolan_"))
         rprint(f"[yellow]Using tempdir: [bold]{tmpdir}[/]")
@@ -44,7 +55,7 @@ def main() -> None:
 
         portolaned_stac_filepath = generate_portolan(
             pmtiled_stac_filepath=pmtiled_stac_filepath,
-            tmpdir=tmpdir,
+            target_dir=target_dir or tmpdir / OUTPUT_DIRNAME,
         )
         rprint(f"[green]Output: [bold]{portolaned_stac_filepath}[/]")
     except Exception as e:
