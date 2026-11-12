@@ -38,7 +38,9 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
             id=data_layer["to_asset_id"],
             geometry=None,
             bbox=gdf.to_crs("EPSG:4326").total_bounds.tolist(),
-            datetime=datetime.datetime.now(),  # Probably bad but whatever
+            datetime=datetime.datetime.now(
+                tz=datetime.UTC,
+            ),  # Probably bad but whatever
             properties={},
         )
         item.add_asset(
