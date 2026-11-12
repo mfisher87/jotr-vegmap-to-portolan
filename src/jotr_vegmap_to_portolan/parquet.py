@@ -65,6 +65,8 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
                 ]
             ),
         ),
+        # Unclear. License field on portal is empty. Data is public domain.
+        license="CC0-1.0",
     )
     catalog.add_child(collection, title=collection.description)
 
