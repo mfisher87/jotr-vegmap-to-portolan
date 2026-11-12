@@ -55,17 +55,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
         id="jotr-vegmap",
         title="JOTR vegetation map & park boundary",
         description="JOTR vegetation map & park boundary",
-        extent=pystac.Extent(
-            spatial=pystac.SpatialExtent(bboxes=[item.bbox for item in items]),
-            temporal=pystac.TemporalExtent(
-                intervals=[
-                    [
-                        datetime.datetime.now(),
-                        datetime.datetime.now(),
-                    ]
-                ]
-            ),
-        ),
+        extent=pystac.Extent.from_items(items),
         providers=[
             pystac.Provider(
                 name="Schmidt Center for Data Science & Environment",
