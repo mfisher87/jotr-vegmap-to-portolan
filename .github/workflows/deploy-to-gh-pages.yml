@@ -40,6 +40,7 @@ jobs:
           version: "11"
           runtime: "node@24"
           cache: true
+          working-directory: "portolan-browser"
 
       - name: "Build Portolan Browser"
         working-directory: "portolan-browser"
