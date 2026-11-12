@@ -70,7 +70,10 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
                 name="National Park Service",
                 url="https://www.nps.gov",
                 description="Original data provider",
-                roles=[pystac.ProviderRole.PRODUCER],
+                roles=[
+                    pystac.ProviderRole.HOST,
+                    pystac.ProviderRole.PRODUCER,
+                ],
             ),
             pystac.Provider(
                 name="Schmidt Center for Data Science & Environment",
