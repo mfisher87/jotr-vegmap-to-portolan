@@ -44,7 +44,7 @@ jobs:
 
       - name: "Build Portolan Browser"
         working-directory: "portolan-browser"
-        run: "pnpm run build"
+        run: "SB_pathPrefix=${{github.event.repository.name}} pnpm run build"
 
       # Finalize
       - name: "Copy portolan browser to output dir"
