@@ -37,7 +37,8 @@ def main(
 
         input_data_stac_filepath = get_input_data(tmpdir=tmpdir)
         rprint(
-            f"[yellow]Fetched and unzipped input data: [bold]{input_data_stac_filepath}[/]",
+            f"[yellow]Fetched and unzipped input data:"
+            f" [bold]{input_data_stac_filepath}[/]",
         )
 
         (tmpdir / ASSETS_DIRNAME).mkdir()
