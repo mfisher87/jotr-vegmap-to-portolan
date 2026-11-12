@@ -5,7 +5,7 @@ import pyogrio
 import pystac
 
 from jotr_vegmap_to_portolan.dirs import PMTILES_DIRNAME
-from jotr_vegmap_to_portolan.exceptions import TypeguardException
+from jotr_vegmap_to_portolan.exceptions import TypeguardError
 
 
 def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
@@ -45,6 +45,6 @@ def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
 
     href = catalog.get_self_href()
     if href is None:
-        raise TypeguardException
+        raise TypeguardError
 
     return Path(href)

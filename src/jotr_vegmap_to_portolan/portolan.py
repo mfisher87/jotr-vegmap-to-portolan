@@ -4,7 +4,7 @@ from pathlib import Path
 import pystac
 from rashid import validate
 
-from jotr_vegmap_to_portolan.exceptions import TypeguardException, ValidationException
+from jotr_vegmap_to_portolan.exceptions import TypeguardError, ValidationError
 from jotr_vegmap_to_portolan.static import STATIC_ASSETS
 
 
@@ -33,7 +33,7 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, target_dir: Path) -> Path:
 
     catalog_href = catalog.get_self_href()
     if catalog_href is None:
-        raise TypeguardException
+        raise TypeguardError
 
     report = validate(catalog_href)
 
@@ -41,7 +41,7 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, target_dir: Path) -> Path:
         print(finding.message)
 
     if report.errors:
-        raise ValidationException
+        raise ValidationError
 
     return target_dir
 

@@ -6,7 +6,7 @@ import pystac
 
 from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME, PARQUET_DIRNAME
 from jotr_vegmap_to_portolan.download import DOWNLOAD_ASSET_KEY, DOWNLOAD_ITEM_ID
-from jotr_vegmap_to_portolan.exceptions import TypeguardException
+from jotr_vegmap_to_portolan.exceptions import TypeguardError
 from jotr_vegmap_to_portolan.layers import DATA_LAYERS
 
 
@@ -18,7 +18,7 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
 
     gdb_item = next(input_stac.get_items(DOWNLOAD_ITEM_ID), None)
     if gdb_item is None:
-        raise TypeguardException
+        raise TypeguardError
 
     gdb_path = Path(gdb_item.assets[DOWNLOAD_ASSET_KEY].href)
 
@@ -88,6 +88,6 @@ def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
 
     href = catalog.get_self_href()
     if href is None:
-        raise TypeguardException
+        raise TypeguardError
 
     return Path(href)

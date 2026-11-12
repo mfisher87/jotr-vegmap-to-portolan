@@ -9,7 +9,7 @@ from pathlib import Path
 import pystac
 
 from jotr_vegmap_to_portolan.dirs import INPUT_DATA_DIRNAME
-from jotr_vegmap_to_portolan.exceptions import TypeguardException
+from jotr_vegmap_to_portolan.exceptions import TypeguardError
 
 DOWNLOAD_URL = "https://irma.nps.gov/DataStore/DownloadFile/612199"
 DOWNLOAD_FILENAME = "jotr_vegmap_gdb.zip"
@@ -71,6 +71,6 @@ def get_input_data(*, tmpdir: Path) -> Path:
 
     href = catalog.get_self_href()
     if href is None:
-        raise TypeguardException
+        raise TypeguardError
 
     return Path(href)
