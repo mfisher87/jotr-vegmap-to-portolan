@@ -21,6 +21,7 @@ dependencies = [
 typecheck = [
     "mypy",
     "types-geopandas>=1.2.0.20261107",
+    "types-pyogrio>=0.13.0.20260807",
 ]
 
 [project.scripts]
