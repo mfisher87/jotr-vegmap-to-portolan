@@ -23,6 +23,7 @@ def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
         pmtiles_path = parquet_path.parent / f"{parquet_path.stem}.pmtiles"
         gdf = gpd.read_parquet(parquet_path)
 
+        pmtiles_path.unlink(missing_ok=True)
         pyogrio.write_dataframe(
             gdf,
             pmtiles_path,
