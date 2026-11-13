@@ -37,6 +37,11 @@ def generate_parquet(
         parquet_path = assets_dir / f"{data_layer['to_asset_id']}.parquet"
 
         gdf = gpd.read_file(gdb_path, layer=data_layer["from_gpd_layer"])
+
+        # Spatially sort rows
+        hilbert_distances = gdf.geometry.hilbert_distance()
+        gdf = gdf.iloc[hilbert_distances.argsort().to_numpy()].reset_index(drop=True)
+
         gdf.to_parquet(parquet_path, write_covering_bbox=True)
 
         item = pystac.Item(
