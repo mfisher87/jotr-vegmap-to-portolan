@@ -12,11 +12,13 @@ concurrency:
   cancel-in-progress: true
 
 
+env:
+  PUBLISH_URL: "https://jotr-nps-portolan.org/"
+
+
 jobs:
   build:
     runs-on: "ubuntu-latest"
-    env:
-      PUBLISH_URL: "https://jotr-nps-portolan.org/"
     steps:
       # Build the Portolan catalog
       - name: "Checkout"
