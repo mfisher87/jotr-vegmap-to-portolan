@@ -87,3 +87,12 @@ jobs:
           sshpass -e scp -r -P 22 -o StrictHostKeyChecking=no \
             /tmp/_site/* \
             ${{ secrets.SFTPUSER }}@${{ secrets.SFTPHOST }}:./jotr-nps-portolan.org/
+
+  validate:
+    needs: ["deploy"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Install uv"
+        uses: "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d" # v10.0.1
+
+      - run: "uv run --with rashid rashid check --live ${PUBLISH_URL}"
