@@ -46,7 +46,7 @@ jobs:
         run: |
           SB_pathPrefix=${{github.event.repository.name}} \
           SB_catalogUrl="https://${{github.event.repository.owner}}.github.io/${{github.event.repository.name}}/catalog.json" \
-          pnpm run build"
+          pnpm run build
 
       # Finalize
       - name: "Copy portolan browser to output dir"
