@@ -29,7 +29,7 @@ def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
             pmtiles_path,
             driver="PMTiles",
             layer=item.id,
-            MINZOOM="12",  # TODO: Figure this out programmatically
+            MINZOOM="8",  # TODO: Figure this out programmatically
             MAXZOOM="14",
         )
         item.add_asset(
