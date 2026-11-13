@@ -1,4 +1,4 @@
-name: "Build and deploy to GitHub Pages"
+name: "Build and deploy to jotr-nps-portolan.org"
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: "ubuntu-latest"
     env:
-      PUBLISH_URL: "https://${{github.repository_owner}}.github.io/${{github.event.repository.name}}"
+      PUBLISH_URL: "https://jotr-nps-portolan.org/"
     steps:
       # Build the Portolan catalog
       - name: "Checkout"
@@ -46,30 +46,44 @@ jobs:
       - name: "Build Portolan Browser"
         working-directory: "portolan-browser"
         run: |
-          SB_pathPrefix=${{github.event.repository.name}} \
           SB_catalogUrl="${PUBLISH_URL}/catalog.json" \
           pnpm run build
 
-      # Finalize
       - name: "Copy portolan browser to output dir"
         working-directory: "portolan-browser"
         run: "cp -R dist/* /tmp/_site"
 
-      - name: "Upload site artifact"
-        uses: "actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa"  # v3
+      - name: "Upload artifact"
+        uses: "actions/upload-artifact@v7.0.2"
         with:
-          path: "/tmp/_site"
+          name: "site"
+          path: "/tmp/_site/"
 
   deploy:
+    environment: "sftp"
+    needs: ["build"]
     runs-on: "ubuntu-latest"
-    needs: "build"
-    environment:
-      name: "github-pages"
-      url: "${{ steps.deployment.outputs.page_url }}"
-    permissions:
-      pages: "write"
-      id-token: "write"
     steps:
-      - name: "Deploy to GitHub Pages"
-        id: "deployment"
-        uses: "actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e"  # v4
+      - name: "Download artifact"
+        uses: "actions/download-artifact@v8.0.2"
+        with:
+          name: "site"
+          path: "/tmp/_site/"
+
+      - name: "Install SSH client and sshpass"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-client sshpass
+
+      - name: "Setup SSH known hosts"
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H -p 22 ${{ secrets.SFTPHOST }} >> ~/.ssh/known_hosts
+
+      - name: "Deploy to Sam's SFTP server"
+        env:
+          SSHPASS: "${{ secrets.SFTPPASSWORD }}"
+        run: |
+          sshpass -e scp -r -P 22 -o StrictHostKeyChecking=no \
+            /tmp/_site/* \
+            ${{ secrets.SFTPUSER }}@${{ secrets.SFTPHOST }}:./jotr-nps-portolan.org/
