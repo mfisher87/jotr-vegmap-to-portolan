@@ -10,9 +10,14 @@ from jotr_vegmap_to_portolan.exceptions import TypeguardError
 from jotr_vegmap_to_portolan.layers import DATA_LAYERS
 
 
-def generate_parquet(*, input_data_stac_filepath: Path, tmpdir: Path) -> Path:
+def generate_parquet(
+    *,
+    input_data_stac_filepath: Path,
+    target_dir: Path,
+    tmpdir: Path,
+) -> Path:
     destination_dir = tmpdir / PARQUET_DIRNAME
-    assets_dir = tmpdir / ASSETS_DIRNAME
+    assets_dir = target_dir / ASSETS_DIRNAME
 
     input_stac = pystac.Catalog.from_file(input_data_stac_filepath)
 

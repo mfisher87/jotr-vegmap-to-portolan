@@ -17,7 +17,7 @@ def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
     catalog.id = "jotr-vegmap-parquet-and-pmtiles"
     catalog.description = "JOTR vegetation map in Parquet and PMTiles"
 
-    for item in catalog.get_items():
+    for item in next(iter(catalog.get_children())).get_items():
         parquet_asset = next(iter(item.get_assets().values()))
         parquet_path = Path(parquet_asset.href)
         pmtiles_path = parquet_path.parent / f"{parquet_path.stem}.pmtiles"

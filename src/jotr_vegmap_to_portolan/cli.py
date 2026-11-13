@@ -31,19 +31,24 @@ def main(
         ),
     ] = None,
 ) -> None:
-    try:
-        tmpdir = Path(tempfile.mkdtemp(prefix="jotr_vegmap_to_portolan_"))
-        rprint(f"[yellow]Using tempdir: [bold]{tmpdir}[/]")
+    tmpdir = Path(tempfile.mkdtemp(prefix="jotr_vegmap_to_portolan_"))
+    target_dir = target_dir or tmpdir / OUTPUT_DIRNAME
+    assets_dir = target_dir / ASSETS_DIRNAME
 
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    rprint(f"[yellow]Using tempdir: [bold]{tmpdir}[/]")
+
+    try:
         input_data_stac_filepath = get_input_data(tmpdir=tmpdir)
         rprint(
             f"[yellow]Fetched and unzipped input data:"
             f" [bold]{input_data_stac_filepath}[/]",
         )
 
-        (tmpdir / ASSETS_DIRNAME).mkdir()
         parqueted_stac_filepath = generate_parquet(
             input_data_stac_filepath=input_data_stac_filepath,
+            target_dir=target_dir,
             tmpdir=tmpdir,
         )
         rprint(f"[yellow]Generated parquet: [bold]{parqueted_stac_filepath}[/]")
@@ -56,7 +61,7 @@ def main(
 
         portolaned_stac_filepath = generate_portolan(
             pmtiled_stac_filepath=pmtiled_stac_filepath,
-            target_dir=target_dir or tmpdir / OUTPUT_DIRNAME,
+            target_dir=target_dir,
         )
         rprint(f"[green]Output: [bold]{portolaned_stac_filepath}[/]")
     except Exception as e:
