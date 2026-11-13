@@ -37,7 +37,7 @@ def generate_parquet(
         parquet_path = assets_dir / f"{data_layer['to_asset_id']}.parquet"
 
         gdf = gpd.read_file(gdb_path, layer=data_layer["from_gpd_layer"])
-        gdf.to_parquet(parquet_path)
+        gdf.to_parquet(parquet_path, write_covering_bbox=True)
 
         item = pystac.Item(
             id=data_layer["to_asset_id"],
