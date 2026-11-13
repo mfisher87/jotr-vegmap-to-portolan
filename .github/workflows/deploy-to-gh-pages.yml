@@ -15,6 +15,8 @@ concurrency:
 jobs:
   build:
     runs-on: "ubuntu-latest"
+    env:
+      PUBLISH_URL: "https://${{github.repository_owner}}.github.io/${{github.event.repository.name}}"
     steps:
       # Build the Portolan catalog
       - name: "Checkout"
@@ -23,7 +25,7 @@ jobs:
       - name: "Install uv"
         uses: "astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d" # v10.0.1
 
-      - run: "uv run $(basename $PWD) /tmp/_site"
+      - run: "uv run $(basename $PWD) /tmp/_site --publish-url ${PUBLISH_URL}"
 
       # Build Portolan browser
       - name: "Checkout Portolan Browser repo"
@@ -45,7 +47,7 @@ jobs:
         working-directory: "portolan-browser"
         run: |
           SB_pathPrefix=${{github.event.repository.name}} \
-          SB_catalogUrl="https://${{github.repository_owner}}.github.io/${{github.event.repository.name}}/catalog.json" \
+          SB_catalogUrl="${PUBLISH_URL}/catalog.json" \
           pnpm run build
 
       # Finalize
