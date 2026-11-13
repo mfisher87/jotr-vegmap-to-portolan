@@ -30,6 +30,13 @@ def main(
             ),
         ),
     ] = None,
+    publish_url: Annotated[
+        str | None,
+        typer.Option(
+            "--publish-url",
+            help="If passed, all hrefs will be relative to this URL",
+        ),
+    ] = None,
 ) -> None:
     tmpdir = Path(tempfile.mkdtemp(prefix="jotr_vegmap_to_portolan_"))
     target_dir = target_dir or tmpdir / OUTPUT_DIRNAME
@@ -62,6 +69,7 @@ def main(
         portolaned_stac_filepath = generate_portolan(
             pmtiled_stac_filepath=pmtiled_stac_filepath,
             target_dir=target_dir,
+            publish_url=publish_url,
         )
         rprint(f"[green]Output: [bold]{portolaned_stac_filepath}[/]")
     except Exception as e:

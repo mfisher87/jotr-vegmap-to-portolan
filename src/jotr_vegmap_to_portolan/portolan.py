@@ -8,7 +8,12 @@ from jotr_vegmap_to_portolan.exceptions import TypeguardError, ValidationError
 from jotr_vegmap_to_portolan.static import STATIC_ASSETS
 
 
-def generate_portolan(*, pmtiled_stac_filepath: Path, target_dir: Path) -> Path:
+def generate_portolan(
+    *,
+    pmtiled_stac_filepath: Path,
+    target_dir: Path,
+    publish_url: str | None,
+) -> Path:
     input_stac = pystac.Catalog.from_file(pmtiled_stac_filepath)
 
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -23,13 +28,14 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, target_dir: Path) -> Path:
     # Future steps depend on the catalog having the correct hrefs -- we'll need to do
     # this again when we're done updating the catalog.
     catalog.normalize_hrefs(str(target_dir))
-    catalog.save(catalog_type=pystac.CatalogType.RELATIVE_PUBLISHED)
+    catalog.make_all_asset_hrefs_relative()
+    catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
     add_portolan_extension(catalog=catalog)
     add_static_assets(catalog=catalog)
 
     catalog.normalize_hrefs(str(target_dir))
-    catalog.save(catalog_type=pystac.CatalogType.RELATIVE_PUBLISHED)
+    catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
     catalog_href = catalog.get_self_href()
     if catalog_href is None:
@@ -42,6 +48,13 @@ def generate_portolan(*, pmtiled_stac_filepath: Path, target_dir: Path) -> Path:
 
     if report.errors:
         raise ValidationError
+
+    if publish_url is not None:
+        catalog.normalize_hrefs(publish_url)
+        catalog.save(
+            catalog_type=pystac.CatalogType.RELATIVE_PUBLISHED,
+            dest_href=str(target_dir),
+        )
 
     return target_dir
 
