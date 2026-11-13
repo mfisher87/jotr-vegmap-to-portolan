@@ -12,7 +12,6 @@ def generate_portolan(
     *,
     pmtiled_stac_filepath: Path,
     target_dir: Path,
-    publish_url: str | None,
 ) -> Path:
     input_stac = pystac.Catalog.from_file(pmtiled_stac_filepath)
 
@@ -48,13 +47,6 @@ def generate_portolan(
 
     if report.errors:
         raise ValidationError
-
-    if publish_url is not None:
-        catalog.normalize_hrefs(publish_url)
-        catalog.save(
-            catalog_type=pystac.CatalogType.RELATIVE_PUBLISHED,
-            dest_href=str(target_dir),
-        )
 
     return target_dir
 
