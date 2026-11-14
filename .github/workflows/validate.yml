@@ -11,7 +11,8 @@ env:
 
 
 jobs:
-  build:
+  validate:
+    name: "Build catalog & validate with rashid"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout"
