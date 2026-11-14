@@ -110,7 +110,7 @@ jobs:
           SSHPASS: "${{ secrets.SFTPPASSWORD }}"
         run: |
           sshpass -e scp -r -P 22 -o StrictHostKeyChecking=no \
-            /tmp/_site/* \
+            /tmp/_site/. \
             ${{ secrets.SFTPUSER }}@${{ secrets.SFTPHOST }}:./jotr-nps-portolan.org/
 
   validate:
