@@ -6,12 +6,6 @@ on:
   workflow_dispatch:
 
 
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-
 env:
   PUBLISH_URL: "https://jotr-nps-portolan.org/"
 
