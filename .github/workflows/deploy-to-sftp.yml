@@ -83,6 +83,7 @@ jobs:
         with:
           name: "site"
           path: "/tmp/_site/"
+          include-hidden-files: true
 
   deploy:
     environment: "sftp"
