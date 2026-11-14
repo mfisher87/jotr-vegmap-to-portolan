@@ -29,6 +29,29 @@ jobs:
 
       - run: "uv run $(basename $PWD) /tmp/_site"
 
+      # Build an .htaccess config file
+      - run: |
+          cat << EOF > /tmp/_site/.htaccess
+          <IfModule mod_headers.c>
+            # PTL-LIV-003
+            Header always set Access-Control-Allow-Origin \
+              "*"
+
+            # PTL-LIV-005 — preflight must allow these methods and headers
+            Header always set Access-Control-Allow-Methods \
+              "GET, HEAD, OPTIONS"
+            Header always set Access-Control-Allow-Headers \
+              "Range, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since"
+
+            # PTL-LIV-004 — the response headers a browser must be able to read
+            Header always set Access-Control-Expose-Headers \
+              "Content-Type, Content-Length, Content-Range, Accept-Ranges, ETag"
+
+            Header always set Access-Control-Max-Age \
+              "86400"
+          </IfModule>
+          EOF
+
       # Build Portolan browser
       - name: "Checkout Portolan Browser repo"
         uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"  # v7.0.1
