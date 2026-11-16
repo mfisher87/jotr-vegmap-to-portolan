@@ -8,10 +8,10 @@ from jotr_vegmap_to_portolan.dirs import PMTILES_DIRNAME
 from jotr_vegmap_to_portolan.exceptions import TypeguardError
 
 
-def generate_pmtiles(*, parqueted_stac_filepath: Path, tmpdir: Path) -> Path:
+def generate_pmtiles(*, h3d_stac_filepath: Path, tmpdir: Path) -> Path:
     destination_dir = tmpdir / PMTILES_DIRNAME
 
-    input_stac = pystac.Catalog.from_file(parqueted_stac_filepath)
+    input_stac = pystac.Catalog.from_file(h3d_stac_filepath)
 
     catalog = input_stac.full_copy()
     catalog.id = "jotr-vegmap-parquet-and-pmtiles"

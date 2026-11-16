@@ -7,6 +7,7 @@ from rich import print as rprint
 
 from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME, OUTPUT_DIRNAME
 from jotr_vegmap_to_portolan.download import get_input_data
+from jotr_vegmap_to_portolan.h3 import generate_parquet_h3
 from jotr_vegmap_to_portolan.parquet import generate_parquet
 from jotr_vegmap_to_portolan.pmtiles import generate_pmtiles
 from jotr_vegmap_to_portolan.portolan import generate_portolan
@@ -53,8 +54,15 @@ def main(
         )
         rprint(f"[yellow]Generated parquet: [bold]{parqueted_stac_filepath}[/]")
 
-        pmtiled_stac_filepath = generate_pmtiles(
+        h3d_stac_filepath = generate_parquet_h3(
             parqueted_stac_filepath=parqueted_stac_filepath,
+            target_dir=target_dir,
+            tmpdir=tmpdir,
+        )
+        rprint(f"[yellow]Generated h3: [bold]{h3d_stac_filepath}[/]")
+
+        pmtiled_stac_filepath = generate_pmtiles(
+            h3d_stac_filepath=h3d_stac_filepath,
             tmpdir=tmpdir,
         )
         rprint(f"[yellow]Generated PMTiles: [bold]{pmtiled_stac_filepath}[/]")
