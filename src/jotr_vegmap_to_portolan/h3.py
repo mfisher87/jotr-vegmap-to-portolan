@@ -8,8 +8,8 @@ import pystac
 from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME, PARQUET_H3_DIRNAME
 from jotr_vegmap_to_portolan.exceptions import TypeguardError
 
-H3_RES_NATIVE = 9
-H3_RES_PARENTS = (8, 4, 2, 1, 0)
+H3_RES_NATIVE = 10
+H3_RES_PARENTS = (9, 8, 0)
 
 
 def generate_parquet_h3(
