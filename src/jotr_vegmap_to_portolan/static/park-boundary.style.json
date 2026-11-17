@@ -1,0 +1,23 @@
+{
+  "version": 8,
+  "name": "Park boundary",
+  "sources": {
+    "data": {
+      "type": "vector",
+      "minzoom": 8,
+      "maxzoom": 14
+    }
+  },
+  "layers": [
+    {
+      "id": "park-boundary-line",
+      "type": "line",
+      "source": "data",
+      "source-layer": "park-boundary",
+      "paint": {
+        "line-color": "#5D4037",
+        "line-width": 2
+      }
+    }
+  ]
+}

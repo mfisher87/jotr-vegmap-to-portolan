@@ -5,7 +5,7 @@ import pystac
 from rashid import validate
 
 from jotr_vegmap_to_portolan.exceptions import TypeguardError, ValidationError
-from jotr_vegmap_to_portolan.static import STATIC_LINKS
+from jotr_vegmap_to_portolan.static import STATIC_ASSETS, STATIC_LINKS
 
 
 def generate_portolan(
@@ -32,6 +32,7 @@ def generate_portolan(
 
     add_portolan_extension(catalog=catalog)
     add_static_links(catalog=catalog)
+    add_static_assets(catalog=catalog)
 
     catalog.normalize_hrefs(str(target_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
@@ -68,6 +69,7 @@ def add_static_links(*, catalog: pystac.Catalog) -> None:
                 target_dir = Path(entity.self_href).parent
                 target_filepath = target_dir / link["filepath"].name
                 shutil.copy(link["filepath"], target_filepath)
+
                 entity.add_link(
                     pystac.Link(
                         rel=link["rel"],
@@ -76,3 +78,21 @@ def add_static_links(*, catalog: pystac.Catalog) -> None:
                         title=target_filepath.name,
                     ),
                 )
+
+
+def add_static_assets(*, catalog: pystac.Catalog) -> None:
+    for collection in catalog.get_children():
+        for asset_description in STATIC_ASSETS[collection.id]:
+            target_dir = Path(collection.self_href).parent
+            target_filepath = target_dir / asset_description["filepath"].name
+            shutil.copy(asset_description["filepath"], target_filepath)
+
+            collection.add_asset(
+                key=asset_description["key"],
+                asset=pystac.Asset(
+                    href=str(target_filepath.relative_to(target_dir)),
+                    media_type=asset_description["media_type"],
+                    title=asset_description["title"],
+                    roles=asset_description["roles"],
+                ),
+            )
