@@ -12,7 +12,7 @@ class StaticLinkDescription(TypedDict):
 
 
 class StaticAssetDescription(TypedDict):
-    key: CollectionName
+    key: str
     filepath: Path
     title: str
     media_type: str | pystac.MediaType
@@ -24,7 +24,7 @@ STATIC_LINKS: list[StaticLinkDescription] = [
     {"rel": "describedby", "filepath": Path(__file__).parent / "README.md"},
 ]
 
-STATIC_ASSETS: dict[CollectionName, list[pystac.Asset]] = {
+STATIC_ASSETS: dict[CollectionName, list[StaticAssetDescription]] = {
     "park-boundary": [
         {
             "key": "styles/default",
