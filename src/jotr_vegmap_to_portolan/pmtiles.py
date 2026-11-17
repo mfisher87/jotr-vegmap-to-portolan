@@ -42,13 +42,20 @@ def generate_pmtiles(*, h3d_stac_filepath: Path, tmpdir: Path) -> Path:
         )
 
         collection.add_asset(key="pmtiles", asset=pmtiles_asset)
-        collection.add_link(
-            pystac.Link(
-                rel="pmtiles",
-                target=pmtiles_asset.href,
-                media_type=pystac.MediaType.VND_PMTILES,
-            ),
-        )
+        # IMPORTANT: Due to https://github.com/stac-utils/pystac/issues/1856,
+        # any `extra_fields` written here will be trashed on copy in a following
+        # step of the pipeline :(
+        # Therefore the following is commented.
+        # Instead, we add the links in the final portolanification step of the pipeline.
+        # :( :( :( :( woof :( :( :( :(
+        # collection.add_link(
+        #     pystac.Link(
+        #         rel="pmtiles",
+        #         target=pmtiles_asset.href,
+        #         media_type=pystac.MediaType.VND_PMTILES,
+        #         extra_fields={"pmtiles:layers": [collection.id]}
+        #     ),
+        # )
 
         collection.stac_extensions.append(
             "https://stac-extensions.github.io/web-map-links/v1.3.0/schema.json",

@@ -37,6 +37,7 @@ def generate_portolan(
     add_portolan_extension(catalog=catalog)
     add_static_links(catalog=catalog)
     add_static_assets(catalog=catalog)
+    add_pmtiles_links(catalog=catalog)
 
     catalog.normalize_hrefs(str(target_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
@@ -103,3 +104,24 @@ def add_static_assets(*, catalog: pystac.Catalog) -> None:
                     roles=asset_description["roles"],
                 ),
             )
+
+
+def add_pmtiles_links(*, catalog: pystac.Catalog) -> None:
+    """Register each collection's PMTiles layers per web-map-links.
+
+    Done here rather than in the PMTiles stage because `Catalog.full_copy()` drops
+    `extra_fields` (https://github.com/stac-utils/pystac/issues/1856), so a
+    `pmtiles:layers` array set earlier in the pipeline is trashed.
+    """
+    for collection in catalog.get_children():
+        if not isinstance(collection, pystac.Collection):
+            raise TypeguardError
+
+        collection.add_link(
+            pystac.Link(
+                rel="pmtiles",
+                target=collection.assets["pmtiles"].href,
+                media_type=pystac.MediaType.VND_PMTILES,
+                extra_fields={"pmtiles:layers": [collection.id]},
+            ),
+        )
