@@ -1,11 +1,15 @@
 import shutil
 from pathlib import Path
+from typing import TYPE_CHECKING, cast
 
 import pystac
 from rashid import validate
 
 from jotr_vegmap_to_portolan.exceptions import TypeguardError, ValidationError
 from jotr_vegmap_to_portolan.static import STATIC_ASSETS, STATIC_LINKS
+
+if TYPE_CHECKING:
+    from jotr_vegmap_to_portolan._types import CollectionName
 
 
 def generate_portolan(
@@ -82,7 +86,10 @@ def add_static_links(*, catalog: pystac.Catalog) -> None:
 
 def add_static_assets(*, catalog: pystac.Catalog) -> None:
     for collection in catalog.get_children():
-        for asset_description in STATIC_ASSETS[collection.id]:
+        if not isinstance(collection, pystac.Collection):
+            raise TypeguardError
+
+        for asset_description in STATIC_ASSETS[cast("CollectionName", collection.id)]:
             target_dir = Path(collection.self_href).parent
             target_filepath = target_dir / asset_description["filepath"].name
             shutil.copy(asset_description["filepath"], target_filepath)

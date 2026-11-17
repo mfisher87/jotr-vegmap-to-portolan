@@ -18,6 +18,9 @@ def generate_pmtiles(*, h3d_stac_filepath: Path, tmpdir: Path) -> Path:
     catalog.description = "JOTR vegetation map in Parquet and PMTiles"
 
     for collection in catalog.get_children():
+        if not isinstance(collection, pystac.Collection):
+            raise TypeguardError
+
         parquet_asset = collection.assets["parquet"]
         parquet_path = Path(parquet_asset.href)
         pmtiles_path = parquet_path.parent / f"{parquet_path.stem}.pmtiles"

@@ -32,6 +32,9 @@ def generate_parquet_h3(
 
     for collection_name in ["park-boundary", "vegetation-map"]:
         collection = catalog.get_child(collection_name)
+        if not isinstance(collection, pystac.Collection):
+            raise TypeguardError
+
         parquet_asset = collection.assets["parquet"]
 
         gdf = gpd.read_parquet(parquet_asset.href)
