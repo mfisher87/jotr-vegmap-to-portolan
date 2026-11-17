@@ -32,9 +32,8 @@ def generate_parquet(
         description="JOTR vegetation map in Parquet",
     )
 
-    items: list[pystac.Item] = []
     for data_layer in DATA_LAYERS:
-        parquet_path = assets_dir / f"{data_layer['to_asset_id']}.parquet"
+        parquet_path = assets_dir / f"{data_layer['to_id']}.parquet"
 
         gdf = gpd.read_file(gdb_path, layer=data_layer["from_gpd_layer"])
 
@@ -44,8 +43,10 @@ def generate_parquet(
 
         gdf.to_parquet(parquet_path, write_covering_bbox=True)
 
+        # We're just using the item to hold the exent info -- we're only adding the
+        # asset to the catalog at the collection level below, not the whole item.
         item = pystac.Item(
-            id=data_layer["to_asset_id"],
+            id=data_layer["to_id"],
             geometry=None,
             bbox=gdf.to_crs("EPSG:4326").total_bounds.tolist(),
             datetime=datetime.datetime.now(
@@ -61,37 +62,34 @@ def generate_parquet(
                 roles=["data"],
             ),
         )
-        items.append(item)
 
-    collection = pystac.Collection(
-        id="jotr-vegmap",
-        title="JOTR vegetation map & park boundary",
-        description="JOTR vegetation map & park boundary",
-        extent=pystac.Extent.from_items(items),
-        providers=[
-            pystac.Provider(
-                name="Schmidt Center for Data Science & Environment",
-                url="https://dse.berkeley.edu/",
-                description="Processed source data in to H3 DGGS",
-                roles=[pystac.ProviderRole.PROCESSOR],
-            ),
-            pystac.Provider(
-                name="National Park Service",
-                url="https://www.nps.gov",
-                description="Original data provider",
-                roles=[
-                    pystac.ProviderRole.PRODUCER,
-                    pystac.ProviderRole.HOST,
-                ],
-            ),
-        ],
-        # Unclear. License field on portal is empty. Data is public domain.
-        license="CC0-1.0",
-    )
-    catalog.add_child(collection, title=collection.description)
-
-    for item in items:
-        collection.add_item(item, title=data_layer["title"])
+        collection = pystac.Collection(
+            id=data_layer["to_id"],
+            title=data_layer["title"],
+            description=data_layer["title"],
+            extent=pystac.Extent.from_items([item]),
+            providers=[
+                pystac.Provider(
+                    name="Schmidt Center for Data Science & Environment",
+                    url="https://dse.berkeley.edu/",
+                    description="Processed source data in to H3 DGGS",
+                    roles=[pystac.ProviderRole.PROCESSOR],
+                ),
+                pystac.Provider(
+                    name="National Park Service",
+                    url="https://www.nps.gov",
+                    description="Original data provider",
+                    roles=[
+                        pystac.ProviderRole.PRODUCER,
+                        pystac.ProviderRole.HOST,
+                    ],
+                ),
+            ],
+            # Unclear. License field on portal is empty. Data is public domain.
+            license="CC0-1.0",
+        )
+        catalog.add_child(collection, title=collection.description)
+        collection.add_asset(key="parquet", asset=item.assets["parquet"])
 
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)

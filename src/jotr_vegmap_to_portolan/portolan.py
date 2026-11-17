@@ -56,9 +56,8 @@ def add_portolan_extension(*, catalog: pystac.Catalog) -> None:
 
     catalog.stac_extensions.append(portolan_schema_url)
 
-    # WARNING: Assumes a single-collection catalog
-    collection = next(iter(catalog.get_children()))
-    collection.stac_extensions.append(portolan_schema_url)
+    for collection in catalog.get_children():
+        collection.stac_extensions.append(portolan_schema_url)
 
 
 def add_static_assets(*, catalog: pystac.Catalog) -> None:
@@ -66,19 +65,17 @@ def add_static_assets(*, catalog: pystac.Catalog) -> None:
 
     These aren't "assets" in the STAC sense.
     """
-    # WARNING: Assumes a single-collection catalog
-    collection = next(iter(catalog.get_children()))
-
-    for asset in STATIC_ASSETS:
-        for entity in [catalog, collection]:
-            target_dir = Path(entity.self_href).parent
-            target_filepath = target_dir / asset["filepath"].name
-            shutil.copy(asset["filepath"], target_filepath)
-            entity.add_link(
-                pystac.Link(
-                    rel=asset["rel"],
-                    target=str(target_filepath.relative_to(target_dir)),
-                    media_type="text/markdown",
-                    title=target_filepath.name,
-                ),
-            )
+    for collection in catalog.get_children():
+        for asset in STATIC_ASSETS:
+            for entity in [catalog, collection]:
+                target_dir = Path(entity.self_href).parent
+                target_filepath = target_dir / asset["filepath"].name
+                shutil.copy(asset["filepath"], target_filepath)
+                entity.add_link(
+                    pystac.Link(
+                        rel=asset["rel"],
+                        target=str(target_filepath.relative_to(target_dir)),
+                        media_type="text/markdown",
+                        title=target_filepath.name,
+                    ),
+                )

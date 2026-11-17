@@ -30,12 +30,10 @@ def generate_parquet_h3(
         "Contains vegetation map and park boundary. Now with H3 hexed data!"
     )
 
-    # WARNING: Assumes a single-collection catalog
-    collection = next(iter(catalog.get_children()))
-    items = collection.get_items()
+    for collection_name in ["park-boundary", "vegetation-map"]:
+        collection = catalog.get_child(collection_name)
+        parquet_asset = collection.assets["parquet"]
 
-    for item in items:
-        parquet_asset = item.assets["parquet"]
         gdf = gpd.read_parquet(parquet_asset.href)
         gdf = gdf.to_crs("EPSG:4326")
         without_geom = gdf.drop(columns=gdf.geometry.name)
@@ -62,9 +60,9 @@ def generate_parquet_h3(
                 dtype="uint64",
             )
 
-        parquet_h3_path = assets_dir / f"{item.id}-h3.parquet"
+        parquet_h3_path = assets_dir / f"{collection.id}-h3.parquet"
         hex_table.to_parquet(parquet_h3_path)
-        item.add_asset(
+        collection.add_asset(
             key="parquet-h3",
             asset=pystac.Asset(
                 href=str(parquet_h3_path),

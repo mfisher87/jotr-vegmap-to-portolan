@@ -17,8 +17,8 @@ def generate_pmtiles(*, h3d_stac_filepath: Path, tmpdir: Path) -> Path:
     catalog.id = "jotr-vegmap-parquet-and-pmtiles"
     catalog.description = "JOTR vegetation map in Parquet and PMTiles"
 
-    for item in next(iter(catalog.get_children())).get_items():
-        parquet_asset = next(iter(item.get_assets().values()))
+    for collection in catalog.get_children():
+        parquet_asset = collection.assets["parquet"]
         parquet_path = Path(parquet_asset.href)
         pmtiles_path = parquet_path.parent / f"{parquet_path.stem}.pmtiles"
         gdf = gpd.read_parquet(parquet_path)
@@ -28,17 +28,27 @@ def generate_pmtiles(*, h3d_stac_filepath: Path, tmpdir: Path) -> Path:
             gdf,
             pmtiles_path,
             driver="PMTiles",
-            layer=item.id,
+            layer=collection.id,
             MINZOOM="8",  # TODO: Figure this out programmatically
             MAXZOOM="14",
         )
-        item.add_asset(
-            key="pmtiles",
-            asset=pystac.Asset(
-                href=str(pmtiles_path),
+        pmtiles_asset = pystac.Asset(
+            href=str(pmtiles_path),
+            media_type=pystac.MediaType.VND_PMTILES,
+            roles=["visual"],
+        )
+
+        collection.add_asset(key="pmtiles", asset=pmtiles_asset)
+        collection.add_link(
+            pystac.Link(
+                rel="pmtiles",
+                target=pmtiles_asset.href,
                 media_type=pystac.MediaType.VND_PMTILES,
-                roles=["visual"],
             ),
+        )
+
+        collection.stac_extensions.append(
+            "https://stac-extensions.github.io/web-map-links/v1.3.0/schema.json",
         )
 
     catalog.normalize_hrefs(str(destination_dir))
