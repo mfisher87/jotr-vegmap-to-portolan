@@ -2,7 +2,7 @@
 DATA_LAYERS = [
     {
         "from_gpd_layer": "JOTR_Park_Boundary",
-        "to_id": "park-boundary",
+        "to_id": "park-boundary",  # TODO: Type
         "title": "Joshua Tree National Park boundary",
     },
     {

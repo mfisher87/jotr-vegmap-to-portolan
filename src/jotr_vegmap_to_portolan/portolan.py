@@ -5,7 +5,7 @@ import pystac
 from rashid import validate
 
 from jotr_vegmap_to_portolan.exceptions import TypeguardError, ValidationError
-from jotr_vegmap_to_portolan.static import STATIC_ASSETS
+from jotr_vegmap_to_portolan.static import STATIC_LINKS
 
 
 def generate_portolan(
@@ -31,7 +31,7 @@ def generate_portolan(
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
 
     add_portolan_extension(catalog=catalog)
-    add_static_assets(catalog=catalog)
+    add_static_links(catalog=catalog)
 
     catalog.normalize_hrefs(str(target_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
@@ -60,20 +60,17 @@ def add_portolan_extension(*, catalog: pystac.Catalog) -> None:
         collection.stac_extensions.append(portolan_schema_url)
 
 
-def add_static_assets(*, catalog: pystac.Catalog) -> None:
-    """Add README.md and AGENTS.md to catalog.
-
-    These aren't "assets" in the STAC sense.
-    """
+def add_static_links(*, catalog: pystac.Catalog) -> None:
+    """Add README.md and AGENTS.md to catalog."""
     for collection in catalog.get_children():
-        for asset in STATIC_ASSETS:
+        for link in STATIC_LINKS:
             for entity in [catalog, collection]:
                 target_dir = Path(entity.self_href).parent
-                target_filepath = target_dir / asset["filepath"].name
-                shutil.copy(asset["filepath"], target_filepath)
+                target_filepath = target_dir / link["filepath"].name
+                shutil.copy(link["filepath"], target_filepath)
                 entity.add_link(
                     pystac.Link(
-                        rel=asset["rel"],
+                        rel=link["rel"],
                         target=str(target_filepath.relative_to(target_dir)),
                         media_type="text/markdown",
                         title=target_filepath.name,
