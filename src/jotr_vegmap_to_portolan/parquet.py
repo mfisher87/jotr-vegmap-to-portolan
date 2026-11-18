@@ -64,7 +64,7 @@ def generate_parquet(
             key="parquet",
             asset=pystac.Asset(
                 href=str(parquet_path),
-                media_type=pystac.MediaType.PARQUET,
+                media_type=pystac.MediaType.VND_APACHE_PARQUET,
                 roles=["data"],
             ),
         )
