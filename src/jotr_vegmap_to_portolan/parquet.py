@@ -1,5 +1,6 @@
 import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING, cast
 
 import geopandas as gpd
 import pystac
@@ -10,6 +11,9 @@ from jotr_vegmap_to_portolan.exceptions import TypeguardError
 from jotr_vegmap_to_portolan.layers import DATA_LAYERS
 from jotr_vegmap_to_portolan.static import default_style_filepath
 from jotr_vegmap_to_portolan.thumbnail import generate_thumbnail
+
+if TYPE_CHECKING:
+    from jotr_vegmap_to_portolan._types import CollectionName
 
 
 def generate_parquet(
@@ -96,7 +100,9 @@ def generate_parquet(
         thumbnail_filepath = assets_dir / f"{collection.id}.thumb.png"
         generate_thumbnail(
             geodataframe=gdf,
-            style_filepath=default_style_filepath(collection.id),
+            style_filepath=default_style_filepath(
+                cast("CollectionName", collection.id),
+            ),
             thumbnail_filepath=thumbnail_filepath,
         )
         collection.add_asset(
