@@ -11,6 +11,7 @@ dependencies = [
     "fiona>=1.10.1",
     "geopandas>=1.2.0",
     "h3>=4.5.0",
+    "matplotlib>=3.11.2",
     "pyarrow>=26.0.1",
     "pyogrio>=0.13.0",
     "pystac>=1.16.0",

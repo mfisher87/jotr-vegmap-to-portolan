@@ -8,6 +8,8 @@ from jotr_vegmap_to_portolan.dirs import ASSETS_DIRNAME, PARQUET_DIRNAME
 from jotr_vegmap_to_portolan.download import DOWNLOAD_ASSET_KEY, DOWNLOAD_ITEM_ID
 from jotr_vegmap_to_portolan.exceptions import TypeguardError
 from jotr_vegmap_to_portolan.layers import DATA_LAYERS
+from jotr_vegmap_to_portolan.static import default_style_filepath
+from jotr_vegmap_to_portolan.thumbnail import generate_thumbnail
 
 
 def generate_parquet(
@@ -90,6 +92,21 @@ def generate_parquet(
         )
         catalog.add_child(collection, title=collection.description)
         collection.add_asset(key="parquet", asset=item.assets["parquet"])
+
+        thumbnail_filepath = assets_dir / f"{collection.id}.thumb.png"
+        generate_thumbnail(
+            geodataframe=gdf,
+            style_filepath=default_style_filepath(collection.id),
+            thumbnail_filepath=thumbnail_filepath,
+        )
+        collection.add_asset(
+            key="thumbnail",
+            asset=pystac.Asset(
+                href=str(thumbnail_filepath),
+                media_type=pystac.MediaType.PNG,
+                roles=["thumbnail"],
+            ),
+        )
 
     catalog.normalize_hrefs(str(destination_dir))
     catalog.save(catalog_type=pystac.CatalogType.SELF_CONTAINED)
